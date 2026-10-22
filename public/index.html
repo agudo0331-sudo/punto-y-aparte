@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punto y aparte</title>
+  <style>
+    :root {
+      --crema: #faf7f0;
+      --azul: #dce8f1;
+      --azul-oscuro: #47677d;
+      --texto: #35434b;
+      --blanco: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--crema);
+      color: var(--texto);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 20px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: rgba(255,255,255,.75);
+    }
+
+    .logo { font-size: 23px; font-weight: 700; color: var(--azul-oscuro); }
+
+    nav { display: flex; gap: 20px; flex-wrap: wrap; }
+    nav a { color: var(--texto); text-decoration: none; font-size: 14px; }
+
+    main { max-width: 1050px; margin: auto; padding: 35px 22px 70px; }
+
+    .hero {
+      background: var(--azul);
+      border-radius: 28px;
+      padding: 55px 35px;
+      text-align: center;
+    }
+
+    .etiqueta {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      color: var(--azul-oscuro);
+    }
+
+    h1 { font-size: clamp(35px, 6vw, 57px); line-height: 1.15; margin: 14px 0; }
+    h2 { font-size: 27px; }
+    h3 { margin-bottom: 8px; }
+    p { color: #5e6b70; }
+
+    .boton {
+      border: 0;
+      border-radius: 24px;
+      padding: 12px 20px;
+      background: var(--azul-oscuro);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .seccion { padding: 36px 0 10px; }
+    .rejilla { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 18px; }
+
+    .tarjeta {
+      background: var(--blanco);
+      border: 1px solid #eeeae2;
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .tarjeta button { margin-top: 10px; }
+    .suave { background: #f0eee7; }
+    textarea {
+      width: 100%;
+      min-height: 125px;
+      padding: 14px;
+      border: 1px solid #d7dfe1;
+      border-radius: 14px;
+      font: inherit;
+      resize: vertical;
+      margin: 8px 0 12px;
+    }
+
+    .nota { font-size: 13px; }
+    footer { padding: 25px; text-align: center; font-size: 13px; }
+
+    @media (max-width: 600px) {
+      header { padding: 18px; }
+      nav { gap: 12px; }
+      main { padding: 22px 15px 45px; }
+      .hero { padding: 38px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Punto y aparte</div>
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#espacio">Mi espacio</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#ayuda">Pedir ayuda</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <span class="etiqueta">Un espacio para ti</span>
+      <h1>Un punto para parar.<br>Un espacio para seguir.</h1>
+      <p>No tienes que tenerlo todo claro. Puedes empezar por donde estás hoy.</p>
+      <a class="boton" href="#espacio">Este espacio es para mí</a>
+    </section>
+
+    <section class="seccion" id="espacio">
+      <span class="etiqueta">Mi espacio</span>
+      <h2>¿Por dónde quieres empezar?</h2>
+      <p>Escoge lo que más se acerque a cómo te sientes ahora.</p>
+      <div class="rejilla">
+        <article class="tarjeta">
+          <h3>🌿 Necesito parar</h3>
+          <p>Un pequeño respiro para bajar el ritmo.</p>
+          <button class="boton" onclick="mostrarMensaje('parar')">Empezar</button>
+        </article>
+        <article class="tarjeta">
+          <h3>☁️ Tengo muchas cosas en la cabeza</h3>
+          <p>Un lugar para ordenar lo que estás pensando.</p>
+          <button class="boton" onclick="mostrarMensaje('pensar')">Empezar</button>
+        </article>
+        <article class="tarjeta">
+          <h3>💙 No sé qué siento</h3>
+          <p>No necesitas encontrar las palabras perfectas.</p>
+          <button class="boton" onclick="mostrarMensaje('sentir')">Empezar</button>
+        </article>
+      </div>
+      <div class="tarjeta suave" id="mensajeEmocional" hidden aria-live="polite"></div>
+    </section>
+
+    <section class="seccion" id="diario">
+      <span class="etiqueta">Tu voz cuenta</span>
+      <h2>Un momento para ti</h2>
+      <p>Si te apetece, escribe lo que te gustaría sacar de tu cabeza hoy.</p>
+      <div class="tarjeta">
+        <textarea id="diarioTexto" placeholder="Hoy me gustaría expresar..."></textarea>
+        <button class="boton" onclick="guardarReflexion()">Guardar reflexión</button>
+        <p class="nota" id="estadoDiario" aria-live="polite"></p>
+        <h3>Mis reflexiones anteriores</h3>
+        <div id="historial"></div>
+      </div>
+    </section>
+
+    <section class="seccion" id="recursos">
+      <span class="etiqueta">Pequeñas herramientas</span>
+      <h2>Recursos para el día a día</h2>
+      <div class="rejilla">
+        <article class="tarjeta">
+          <h3>🌬️ Un minuto de calma</h3>
+          <p>Haz una pausa, acomódate y respira a tu ritmo.</p>
+          <button class="boton" onclick="iniciarPausa()">Hacer una pausa</button>
+          <p id="pausaMensaje" aria-live="polite"></p>
+        </article>
+        <article class="tarjeta">
+          <h3>📝 Escribir para aclararme</h3>
+          <p>Escribe sin exigirte que quede perfecto.</p>
+          <a class="boton" href="#diario">Ir a mi diario</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="seccion" id="ayuda">
+      <div class="tarjeta suave">
+        <span class="etiqueta">No tienes que hacerlo todo a solas</span>
+        <h2>Pedir ayuda también es cuidarse</h2>
+        <p>Si lo que te ocurre te preocupa, intenta hablar con una persona adulta de confianza o con un profesional que pueda escucharte.</p>
+        <p class="nota">Este espacio ofrece recursos de bienestar, pero no sustituye la atención profesional ni los servicios de emergencia.</p>
+      </div>
+    </section>
+  <section id="respiracion" class="seccion">
+  <h2>Un momento para respirar</h2>
+  <p>Haz una pausa. No tienes que resolverlo todo ahora.</p>
+  <div class="tarjeta">
+    <p id="textoRespiracion">Prepárate para hacer una pausa.</p>
+    <button type="button" onclick="iniciarRespiracion()">
+      Empezar ejercicio
+    </button>
+  </div>
+</section>
+
+<script>
+let temporizadorRespiracion;
+
+function iniciarRespiracion() {
+  const texto = document.getElementById("textoRespiracion");
+  const pasos = [
+    "Inspira suavemente durante 4 segundos.",
+    "Suelta el aire despacio durante 6 segundos.",
+    "Descansa un momento y vuelve a tu ritmo natural."
+  ];
+
+  let paso = 0;
+  clearInterval(temporizadorRespiracion);
+  texto.textContent = pasos[paso];
+
+  temporizadorRespiracion = setInterval(() => {
+    paso++;
+    if (paso >= pasos.length) {
+      clearInterval(temporizadorRespiracion);
+      texto.textContent = "Has terminado. Sigue a tu ritmo.";
+    } else {
+      texto.textContent = pasos[paso];
+    }
+  }, 5000);
+}
+</script></main>
+
+<script>
+function mostrarPasoDos() {
+  const pensamientos = document.getElementById("pensamientos").value.trim();
+
+  if (!pensamientos) {
+    alert("Puedes escribir algo primero, aunque sea una sola frase.");
+    return;
+  }
+
+  document.getElementById("pasoDos").hidden = false;
+  document.getElementById("pasoDos").scrollIntoView({ behavior: "smooth" });
+}
+
+function mostrarPasoTres() {
+  document.getElementById("pasoTres").hidden = false;
+  document.getElementById("pasoTres").scrollIntoView({ behavior: "smooth" });
+}
+
+function terminarEjercicio() {
+  const paso = document.getElementById("pequenoPaso").value.trim();
+  const mensaje = document.getElementById("mensajeFinal");
+
+  if (!paso) {
+    mensaje.textContent = "Elige una pequeña acción o escribe qué necesitas en este momento.";
+    return;
+  }
+
+  mensaje.textContent = "Has dedicado un momento a ti. No necesitas resolverlo todo hoy. Puedes avanzar poco a poco.";
+}
+</script>
+
+
+<section id="ordenar-pensamientos" class="seccion">
+  <h2>Demasiadas cosas en la cabeza</h2>
+  <p>No tienes que resolverlo todo ahora. Vamos a ordenar tus pensamientos poco a poco.</p>
+
+  <div class="tarjeta">
+    <h3>Paso 1. Sácalo de tu cabeza</h3>
+    <p>Escribe lo que te preocupa o todo lo que estás pensando. No hace falta que esté ordenado.</p>
+    <textarea id="pensamientos" rows="5" placeholder="Ahora mismo tengo muchas cosas en la cabeza..."></textarea>
+    <button type="button" onclick="mostrarPasoDos()">Continuar</button>
+  </div>
+
+  <div class="tarjeta" id="pasoDos" hidden>
+    <h3>Paso 2. Separa y ordena</h3>
+    <p>¿Qué puedes atender ahora, aunque sea un poquito?</p>
+    <textarea id="ahora" rows="3" placeholder="Algo que puedo atender ahora..."></textarea>
+    <p>¿Qué puede esperar a otro momento?</p>
+    <textarea id="despues" rows="3" placeholder="Algo que puede esperar..."></textarea>
+<button type="button" onclick="document.getElementById('pasoDos').hidden=true; document.getElementById('pasoTres').hidden=true; document.getElementById('pensamientos').scrollIntoView({behavior:'smooth'});">Volver</button>
+    <button type="button" onclick="mostrarPasoTres()">Continuar</button>
+  </div>
+
+  <div class="tarjeta" id="pasoTres" hidden>
+    <h3>Paso 3. Elige un pequeño paso</h3>
+    <p>No hace falta solucionarlo todo. ¿Qué pequeña cosa te ayudaría ahora?</p>
+    <textarea id="pequenoPaso" rows="3" placeholder="Mi pequeño paso será..."></textarea>
+    <button type="button" onclick="terminarEjercicio()">Terminar ejercicio</button>
+    <p id="mensajeFinal" aria-live="polite"></p>
+  </div>
+</section>
+
+
+  <footer>
+    Punto y aparte · Un espacio para parar, escucharte y seguir a tu ritmo.
+  </footer>
+
+  <script>
+    function mostrarMensaje(tipo) {
+      const mensajes = {
+        parar: "No tienes que resolverlo todo ahora. Regálate un momento y ve a tu ritmo.",
+        pensar: "Puedes empezar por una sola cosa. ¿Qué es lo que más ocupa tu cabeza hoy?",
+        sentir: "Está bien no saber exactamente qué sientes. Puedes darte tiempo para descubrirlo."
+      };
+      const caja = document.getElementById("mensajeEmocional");
+      caja.textContent = mensajes[tipo];
+      caja.hidden = false;
+      caja.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function guardarReflexion() {
+      const campo = document.getElementById("diarioTexto");
+      const texto = campo.value.trim();
+      const estado = document.getElementById("estadoDiario");
+
+      if (!texto) {
+        estado.textContent = "Escribe algo antes de guardar tu reflexión.";
+        return;
+      }
+
+      let historial = [];
+      try {
+        historial = JSON.parse(localStorage.getItem("reflexionesPuntoYAparte") || "[]");
+        if (!Array.isArray(historial)) historial = [];
+      } catch (error) {
+        historial = [];
+      }
+
+      historial.unshift({ texto, fecha: new Date().toLocaleString("es-ES") });
+      localStorage.setItem("reflexionesPuntoYAparte", JSON.stringify(historial));
+      campo.value = "";
+      estado.textContent = "Tu reflexión se ha guardado en este navegador.";
+      mostrarHistorial();
+    }
+
+    function mostrarHistorial() {
+      const caja = document.getElementById("historial");
+      let historial = [];
+      try {
+        historial = JSON.parse(localStorage.getItem("reflexionesPuntoYAparte") || "[]");
+        if (!Array.isArray(historial)) historial = [];
+      } catch (error) {
+        historial = [];
+      }
+
+      caja.replaceChildren();
+
+      if (!historial.length) {
+        caja.textContent = "Tus reflexiones guardadas aparecerán aquí.";
+        return;
+      }
+
+      historial.slice(0, 10).forEach((reflexion) => {
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta suave";
+        tarjeta.style.marginTop = "12px";
+
+        const fecha = document.createElement("p");
+        fecha.className = "nota";
+        fecha.textContent = reflexion.fecha;
+
+        const contenido = document.createElement("p");
+        contenido.textContent = reflexion.texto;
+
+        tarjeta.append(fecha, contenido);
+        caja.append(tarjeta);
+      });
+    }
+
+    function iniciarPausa() {
+      document.getElementById("pausaMensaje").textContent =
+        "Tómate un momento. Nota el apoyo del suelo y respira con naturalidad, sin forzar el ritmo.";
+    }
+
+    mostrarHistorial();
+  </script>
+</body>
+</html>
